@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.DoubleToIntFunction;
 
 public class CosineSimilarity {
 
     private CosineSimilarity() {
         throw new IllegalStateException("SimilarTextCalculator Should not be instantiated");
     }
-
 
     /**
      * 计算两个字符串的相似度
@@ -24,34 +24,36 @@ public class CosineSimilarity {
         boolean isBlank2 = StringUtils.isBlank(text2);
         //如果内容为空，或者字符长度为0，则代表完全相同
         if (isBlank1 && isBlank2) {
-            return 1.00;
+            return 100;//百分制，实质为 100%，即 1.0
         }
-
         //如果一个为0或者空，一个不为，那说明完全不相似
         if (isBlank1 || isBlank2) {
             return 0.0;
         }
         //这个代表如果两个字符串相等那当然返回1了
         if (text1.equalsIgnoreCase(text2)) {
-            return 1.00;
+            return 100;
         }
 
         //第一步：进行分词
         List<Word> words1 = Tokenizer.string2WordList(text1);
         List<Word> words2 = Tokenizer.string2WordList(text2);
 
-        return getSimilarity(words1, words2);
+        return getSimilarity(words1, words2);//返回相似度
     }
 
     /**
      * 可以对于计算的相似度保留小数点后4位
      */
     public static double getSimilarity(List<Word> words1, List<Word> words2) {
+        double ans = 0.0;
+        ans = getSimilarityImpl(words1,words2);
+        double ansPer = ans * 100.0;//百分制输出答案
+        String exactAns = String.valueOf(ansPer);
+        BigDecimal decimal = new BigDecimal(exactAns);
+        //数字格式化，保留2位小数，最后一位4舍5入
+        return decimal.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 
-        //(int) (score * 10000 + 0.5)其实代表保留小数点后4位 ,因为10342.213强制转换不就是10342。对于强制转换添加0.5就等于四舍五入
-        //score = (int) (score * 10000 + 0.5) / (double) 10000;
-
-        return getSimilarityImpl(words1, words2);
     }
 
     /**
@@ -87,19 +89,16 @@ public class CosineSimilarity {
             if (x1 != null && x2 != null) {
                 //x1x2
                 float oneOfTheDimension = x1 * x2;
-                //+
-                ab.addAndGet(oneOfTheDimension);
+                ab.addAndGet(oneOfTheDimension);//给ab赋值
             }
             if (x1 != null) {
                 //(x1)^2
                 float oneOfTheDimension = x1 * x1;
-                //+
                 aa.addAndGet(oneOfTheDimension);
             }
             if (x2 != null) {
                 //(x2)^2
                 float oneOfTheDimension = x2 * x2;
-                //+
                 bb.addAndGet(oneOfTheDimension);
             }
         });
@@ -109,14 +108,12 @@ public class CosineSimilarity {
         double bbb = Math.sqrt(bb.doubleValue());
 
         //使用BigDecimal保证精确计算浮点数
-        //double aabb = aaa * bbb;
         BigDecimal aabb = BigDecimal.valueOf(aaa).multiply(BigDecimal.valueOf(bbb));
 
         //similarity=a.b/|a|*|b|
         //divide参数说明：aabb被除数,9表示小数点后保留9位，最后一个表示用标准的四舍五入法
         return BigDecimal.valueOf(ab.get()).divide(aabb, 9, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
-
 
     /**
      * 向每一个Word对象的属性都注入weight（权重）属性值
@@ -135,7 +132,6 @@ public class CosineSimilarity {
 
     /**
      * 统计词频
-     *
      * @return 词频统计图
      */
     private static Map<String, AtomicInteger> getFrequency(List<Word> words) {
