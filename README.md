@@ -20,3 +20,5 @@
            cosineSimilarity相似度计算类（采用余弦相似度算法）
  - 原子操作类AtomicFloat
 
+### 9.24 21:30
+完成测试代码
