@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Tokenizer {
-
+    //分词器Tokenizer不应被实例化、将实例化方法private
     private Tokenizer(){
-        throw new IllegalStateException("TextUtil Should not be instantiated");
     }
 
     /**
