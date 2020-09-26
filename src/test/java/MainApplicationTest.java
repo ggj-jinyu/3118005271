@@ -17,8 +17,7 @@ public class MainApplicationTest {
             "src/test/testcase/orig_0.8_dis_1.txt",
             "src/test/testcase/orig_0.8_dis_10.txt",
             "src/test/testcase/orig_0.8_dis_15.txt",
-            "src/test/testcase/unknown.txt",
-            "src/test/testcase/orig_0.8_dis_16.txt"  //其为本人乱序大概50%的文本
+            "src/test/testcase/unknown.txt"
     };
 
     @BeforeClass
@@ -161,21 +160,6 @@ public class MainApplicationTest {
     public void testUnknown(){
         try {
             Main.process(paths[0],paths[7],"src/test/result/testUnknown.txt");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            // 如果抛出异常，证明测试失败,没有通过，没通过的测试计数在Failures中
-            Assert.fail();
-        }
-    }
-
-    /**
-     * 测试未知文本：orig_0.8_dis_16.txt
-     */
-    @Test
-    public void testForDis16(){
-        try {
-            Main.process(paths[0],paths[8],"src/test/result/testForDis16.txt");
         }
         catch (Exception e) {
             e.printStackTrace();
