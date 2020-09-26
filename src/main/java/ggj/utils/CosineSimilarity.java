@@ -5,10 +5,12 @@ import ggj.bean.Word;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.DoubleToIntFunction;
+
+import static java.lang.System.*;
 
 public class CosineSimilarity {
 
@@ -46,14 +48,12 @@ public class CosineSimilarity {
      * 可以对于计算的相似度保留小数点后4位
      */
     public static double getSimilarity(List<Word> words1, List<Word> words2) {
-        double ans = 0.0;
-        ans = getSimilarityImpl(words1,words2);
+        double ans = getSimilarityImpl(words1, words2);
         double ansPer = ans * 100.0;//百分制输出答案
         String exactAns = String.valueOf(ansPer);
         BigDecimal decimal = new BigDecimal(exactAns);
         //数字格式化，保留2位小数，最后一位4舍5入
-        return decimal.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-
+        return decimal.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**
@@ -112,7 +112,7 @@ public class CosineSimilarity {
 
         //similarity=a.b/|a|*|b|
         //divide参数说明：aabb被除数,9表示小数点后保留9位，最后一个表示用标准的四舍五入法
-        return BigDecimal.valueOf(ab.get()).divide(aabb, 9, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return BigDecimal.valueOf(ab.get()).divide(aabb, 9, RoundingMode.UP).doubleValue();
     }
 
     /**
@@ -155,7 +155,7 @@ public class CosineSimilarity {
             if (i.getWeight() != null) {
                 weightMap.put(i.getName(), i.getWeight());
             } else {
-                System.out.println("no word weight info:" + i.getName());
+                out.println("no word weight info:" + i.getName());
             }
         });
         return weightMap;
