@@ -13,9 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.lang.System.*;
 
 public class CosineSimilarity {
-
+    //SimilarTextCalculator Should not be instantiated，将CosineSimilarity实例化方法private
     private CosineSimilarity() {
-        throw new IllegalStateException("SimilarTextCalculator Should not be instantiated");
     }
 
     /**
