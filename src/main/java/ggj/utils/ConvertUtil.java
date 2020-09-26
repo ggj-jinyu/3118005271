@@ -9,9 +9,8 @@ import java.nio.charset.StandardCharsets;
 import static java.lang.System.*;
 
 public class ConvertUtil {
-
+    //ConvertUtil Should not be instantiated，将ConverUtil实例化方法private
     private ConvertUtil(){
-        throw new IllegalStateException("ConvertUtil Should not be instantiated");
     }
 
     /**
